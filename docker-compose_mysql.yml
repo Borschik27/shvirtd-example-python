@@ -1,0 +1,14 @@
+services:
+  db:
+    image: mysql:lts
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 'YtReWq4321'
+      MYSQL_DATABASE: 'virtd'
+      MYSQL_USER: 'app'
+      MYSQL_PASSWORD: 'QwErTy1234'
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./my.cnf:/etc/mysql/conf.d/ip.cnf
