@@ -3,12 +3,17 @@ from flask import request
 import os
 import mysql.connector
 from datetime import datetime
+from dotenv import load_dotenv
 
 app = Flask(__name__)
+
+load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), './.env'))
+
 db_host=os.environ.get('DB_HOST')
 db_user=os.environ.get('DB_USER')
 db_password=os.environ.get('DB_PASSWORD')
 db_database=os.environ.get('DB_NAME')
+table_name = os.environ.get('TABLE_NAME', 'requests')
 
 # Подключение к базе данных MySQL
 db = mysql.connector.connect(
@@ -21,7 +26,7 @@ cursor = db.cursor()
 
 # SQL-запрос для создания таблицы в БД
 create_table_query = f"""
-CREATE TABLE IF NOT EXISTS {db_database}.requests (
+CREATE TABLE IF NOT EXISTS {db_database}.{table_name} (
 id INT AUTO_INCREMENT PRIMARY KEY,
 request_date DATETIME,
 request_ip VARCHAR(255)
@@ -37,7 +42,7 @@ def index():
     # Запись в базу данных
     now = datetime.now()
     current_time = now.strftime("%Y-%m-%d %H:%M:%S")
-    query = "INSERT INTO requests (request_date, request_ip) VALUES (%s, %s)"
+    query = f"INSERT INTO {table_name} (request_date, request_ip) VALUES (%s, %s)"
     values = (current_time, ip_address)
     cursor.execute(query, values)
     db.commit()
